@@ -1,15 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 const login = require("fca-unofficial");
-const chalk = require("chalk");
 
-const PREFIX = ":";
-const commandPath = path.join(__dirname, "scripts", "commands");
+const { config } = require("./config.json");
+const PREFIX = config.prefix;
 
 const commands = {};
 
 async function loadCommands() {
-  const commandFiles = await fs.promises.readdir(commandPath);
+  const commandFiles = await fs.promises.readdir(path.join(__dirname, "scripts", "commands"));
 
   const filteredCommandFiles = commandFiles.reduce((filtered, file) => {
     if (file.endsWith(".js")) {
@@ -20,18 +19,18 @@ async function loadCommands() {
 
   for (const file of filteredCommandFiles) {
     const commandName = path.basename(file, ".js");
-    commands[commandName] = require(path.join(commandPath, file));
+    commands[commandName] = require(path.join(__dirname, "scripts", "commands", file));
   }
 }
 
 await loadCommands();
 
-fs.promises.watch(commandPath).then((watcher) => {
+fs.promises.watch(path.join(__dirname, "scripts", "commands")).then((watcher) => {
   watcher.on("change", async (filename) => {
     if (filename.endsWith(".js")) {
       const commandName = path.basename(filename, ".js");
-      delete require.cache[require.resolve(path.join(commandPath, filename))];
-      commands[commandName] = require(path.join(commandPath, filename));
+      delete require.cache[require.resolve(path.join(__dirname, "scripts", "commands", filename))];
+      commands[commandName] = require(path.join(__dirname, "scripts", "commands", filename));
       console.log(`AutoReload: ${commandName} Realoded`);
     }
   });
@@ -41,7 +40,7 @@ login({ appState: loadAppState() }, (err, api) => {
   if (err) return console.error(err);
 
   api.on("message", async (event) => {
-    if (event.body && event.body.toLowerCase() === "prefix") {
+    if (event.body && event.body.toLowerCase() === PREFIX) {
       api.sendMessage(`My prefix is: \`${PREFIX}\``, event.threadID, event.messageID);
     } else if (event.body && event.body.toLowerCase().startsWith(PREFIX)) {
       const [command, ...args] = event.body.slice(PREFIX.length).trim().split(" ");
@@ -64,11 +63,3 @@ function loadAppState() {
     return null;
   }
 }
-
-const PORT = process.env.PORT || 3000;
-console.log(chalk.grey("Yoshii - (1.0.200)"));
-console.log(chalk.green("[fca-yoshii]: Logging in"));
-
-module.exports = {
-    author: "Yoshii"
-};
