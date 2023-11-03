@@ -1,0 +1,78 @@
+{
+    "default_ranks": {
+      "player": "player"
+    },
+    "ranks": {
+      "player": {
+        "parent": "builtin_player",
+        "permissions": [],
+        "config": {
+          "messages_required": 10
+        }
+      },
+      "level 2": {
+        "parent": "player",
+        "permissions": [],
+        "config": {
+          "messages_required": 20
+        }
+      },
+      "level 3": {
+        "parent": "level 2",
+        "permissions": [],
+        "config": {
+          "messages_required": 30
+        }
+      },
+      "level 4": {
+        "parent": "level 3",
+        "permissions": [],
+        "config": {
+          "messages_required": 40
+        }
+      },
+      "level 5": {
+        "parent": "level 4",
+        "permissions": [],
+        "config": {
+          "messages_required": 50
+        }
+      },
+      "level 6": {
+        "parent": "level 5",
+        "permissions": [],
+        "config": {
+          "messages_required": 60
+        }
+      },
+      "level 7": {
+        "parent": "level 6",
+        "permissions": [],
+        "config": {
+          "messages_required": 70
+        }
+      },
+      "level 8": {
+        "parent": "level 7",
+        "permissions": [],
+        "config": {
+          "messages_required": 80
+        }
+      },
+      "level 9": {
+        "parent": "level 8",
+        "permissions": [],
+        "config": {
+          "messages_required": 90
+        }
+      },
+      "level 10": {
+        "parent": "level 9",
+        "permissions": [],
+        "config": {
+          "messages_required": 100
+        }
+      }
+    }
+  }
+  
