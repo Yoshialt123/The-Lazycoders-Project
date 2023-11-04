@@ -5,6 +5,7 @@ const login = require("fca-unofficial");
 
 const { config } = require("./config.json");
 const PREFIX = config.prefix;
+const userID = config.user; // Get the user ID from the config file
 
 const commands = {};
 const data = {};
