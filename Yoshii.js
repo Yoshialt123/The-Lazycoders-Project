@@ -7,6 +7,7 @@ const { config } = require("./config.json");
 const PREFIX = config.prefix;
 
 const commands = {};
+const data = {};
 
 async function loadCommands() {
   const commandFiles = await fs.promises.readdir(path.join(__dirname, "scripts", "commands"));
@@ -24,7 +25,55 @@ async function loadCommands() {
   }
 }
 
+async function loadAppState() {
+  try {
+    const appStatePath = path.join(__dirname, "appstate.json");
+    return JSON.parse(fs.readFileSync(appStatePath, "utf8"));
+  } catch (error) {
+    console.error("Error loading app state:", error);
+    return null;
+  }
+}
+
+async function saveAppState(appState) {
+  const appStatePath = path.join(__dirname, "appstate.json");
+  await fs.promises.writeFile(appStatePath, JSON.stringify(appState), "utf8");
+}
+
+async function loadData() {
+  try {
+    const dataPath = path.join(__dirname, "data.json");
+    data = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+  } catch (error) {
+    console.error("Error loading data:", error);
+    data = {};
+  }
+}
+
+async function saveData() {
+  const dataPath = path.join(__dirname, "data.json");
+  await fs.promises.writeFile(dataPath, JSON.stringify(data), "utf8");
+}
+
+async function processData(message) {
+  // Generate data based on the message
+  const generatedData = await yoshii.generateData(message, data);
+
+  // Save the generated data
+  data = generatedData;
+
+  // Automate the thread based on the data
+  await yoshii.automateThread(message, data, bot);
+
+  // Save the app state
+  await saveAppState(bot.appState);
+
+  // Save the data
+  await saveData();
+}
+
 await loadCommands();
+await loadData();
 
 fs.promises.watch(path.join(__dirname, "scripts", "commands")).then((watcher) => {
   watcher.on("change", async (filename) => {
@@ -51,16 +100,9 @@ login({ appState: loadAppState() }, (err, api) => {
       } else {
         api.sendMessage("Invalid command.", event.threadID, event.messageID);
       }
+    } else {
+      // Process the message
+      await processData(event);
     }
   });
 });
-
-function loadAppState() {
-  try {
-    const appStatePath = path.join(__dirname, "appstate.json");
-    return JSON.parse(fs.readFileSync(appStatePath, "utf8"));
-  } catch (error) {
-    console.error("Error loading app state:", error);
-    return null;
-  }
-}
