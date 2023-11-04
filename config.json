@@ -1,8 +1,11 @@
 {
-  "user": "YOUR_USERNAME",
+  "user": "YOUR_USER_ID",
   "password": "YOUR_PASSWORD",
   "nickname": "Yoshii Bot",
   "prefix": "/",
+  "adminBot": [
+    "YOUR_USER_ID"
+  ],
   "colors": {
     "primary": "#FF0000",
     "secondary": "#00FF00",
@@ -14,10 +17,10 @@
     "tertiary": "Courier New"
   },
   "ascii": "
-   (__)
-       (oo)
-    /------\/
- * / |    ||
-    ~~   ~~
+  (__)
+    (oo)
+  /------\/
+ * / |  ||
+  ~~  ~~
 "
 }
